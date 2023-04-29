@@ -12,7 +12,7 @@ import {
   createStakingInstruction,
   createUnstakeInstruction,
 } from "./utils/instructions"
-import { createNft } from "./utils/setup"
+import { createNft } from "../utils/setup"
 import { PROGRAM_ID } from "./utils/constants"
 import { getStakeAccount } from "./utils/accounts"
 
@@ -34,7 +34,7 @@ async function testInitializeStakeAccount(
   const signature = await web3.sendAndConfirmTransaction(
     connection,
     transaction,
-    [keypair]
+    [keypair], {commitment: "finalized"}
   )
   console.log(`https://explorer.solana.com/tx/${signature}?cluster=devnet`)
 
@@ -63,7 +63,7 @@ async function testStaking(
   const signature = await web3.sendAndConfirmTransaction(
     connection,
     transaction,
-    [keypair]
+    [keypair], {commitment: "finalized"}
   )
   console.log(`https://explorer.solana.com/tx/${signature}?cluster=devnet`)
 
@@ -92,7 +92,7 @@ async function testRedeem(
   const signature = await web3.sendAndConfirmTransaction(
     connection,
     transaction,
-    [keypair]
+    [keypair], {commitment: "finalized"}
   )
   console.log(`https://explorer.solana.com/tx/${signature}?cluster=devnet`)
 
@@ -121,7 +121,7 @@ async function testUnstaking(
   const signature = await web3.sendAndConfirmTransaction(
     connection,
     transaction,
-    [keypair]
+    [keypair], {commitment: "finalized"}
   )
   console.log(`https://explorer.solana.com/tx/${signature}?cluster=devnet`)
 
@@ -135,6 +135,7 @@ async function testUnstaking(
 
 async function main() {
   const connection = new web3.Connection(web3.clusterApiUrl("devnet"))
+
   const user = await initializeKeypair(connection)
 
   console.log("PublicKey:", user.publicKey.toBase58())
