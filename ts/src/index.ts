@@ -15,6 +15,8 @@ import {
 import { createNft } from "../utils/setup"
 import { PROGRAM_ID } from "./utils/constants"
 import { getStakeAccount } from "./utils/accounts"
+import { TOKEN_PROGRAM_ID } from "@solana/spl-token"
+import { PROGRAM_ID as METADATA_PROGRAM_ID } from "@metaplex-foundation/mpl-token-metadata"
 
 async function testInitializeStakeAccount(
   connection: web3.Connection,
@@ -54,6 +56,10 @@ async function testStaking(
   const stakeInstruction = createStakingInstruction(
     keypair.publicKey,
     nft.tokenAddress,
+    nft.mintAddress,
+    nft.masterEditionAddress,
+    TOKEN_PROGRAM_ID,
+    METADATA_PROGRAM_ID,
     PROGRAM_ID
   )
 

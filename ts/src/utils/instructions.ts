@@ -7,6 +7,7 @@ import {
 export function createInitializeStakeAccountInstruction(
   nftHolder: PublicKey,
   nftTokenAccount: PublicKey,
+
   programId: PublicKey
 ): TransactionInstruction {
   const [stakeAccount] = PublicKey.findProgramAddressSync(
@@ -45,12 +46,23 @@ export function createInitializeStakeAccountInstruction(
 export function createStakingInstruction(
   nftHolder: PublicKey,
   nftTokenAccount: PublicKey,
+  nftMint: PublicKey,
+  nftEdition: PublicKey,
+  tokenProgram: PublicKey,
+  metadataProgram: PublicKey,
+
   programId: PublicKey
 ): TransactionInstruction {
   const [stakeAccount] = PublicKey.findProgramAddressSync(
     [nftHolder.toBuffer(), nftTokenAccount.toBuffer()],
     programId
   )
+
+  const [delegateAuthority] = PublicKey.findProgramAddressSync(
+    [Buffer.from("authority")],
+    programId
+  )  
+
 
   return new TransactionInstruction({
     programId: programId,
@@ -70,6 +82,31 @@ export function createStakingInstruction(
         isWritable: true,
         isSigner: false,
       },
+      {
+        pubkey: nftMint,
+        isWritable: false,
+        isSigner: false,
+      },
+      {
+        pubkey: nftEdition,
+        isWritable: false,
+        isSigner: false,
+      },
+      {
+        pubkey: delegateAuthority,
+        isWritable: true,
+        isSigner: false,
+      },
+      {
+        pubkey: tokenProgram,
+        isWritable: false,
+        isSigner: false,
+      },
+      {
+        pubkey: metadataProgram,
+        isWritable: false,
+        isSigner: false,
+      }                  
     ],
     data: Buffer.from([1]),
   })
