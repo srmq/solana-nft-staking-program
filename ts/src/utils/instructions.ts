@@ -115,12 +115,20 @@ export function createStakingInstruction(
 export function createRedeemInstruction(
   nftHolder: PublicKey,
   nftTokenAccount: PublicKey,
-  programId: PublicKey
+  programId: PublicKey,
+  mint: PublicKey,
+  userStakeATA: PublicKey,
+  tokenProgram: PublicKey  
 ): TransactionInstruction {
   const [stakeAccount] = PublicKey.findProgramAddressSync(
     [nftHolder.toBuffer(), nftTokenAccount.toBuffer()],
     programId
   )
+
+  const [mintAuth] = PublicKey.findProgramAddressSync(
+    [Buffer.from("mint")],
+    programId
+  )  
 
   return new TransactionInstruction({
     programId: programId,
@@ -140,6 +148,26 @@ export function createRedeemInstruction(
         isWritable: true,
         isSigner: false,
       },
+      {
+        pubkey: mint,
+        isWritable: true,
+        isSigner: false,
+      },
+      {
+        pubkey: mintAuth,
+        isWritable: false,
+        isSigner: false,
+      },
+      {
+        pubkey: userStakeATA,
+        isWritable: true,
+        isSigner: false,
+      },
+      {
+        pubkey: tokenProgram,
+        isSigner: false,
+        isWritable: false,
+      }      
     ],
     data: Buffer.from([2]),
   })
@@ -148,12 +176,28 @@ export function createRedeemInstruction(
 export function createUnstakeInstruction(
   nftHolder: PublicKey,
   nftTokenAccount: PublicKey,
-  programId: PublicKey
+  programId: PublicKey,
+  nftMint: PublicKey,
+  nftEdition: PublicKey,
+  stakeMint: PublicKey,
+  userStakeATA: PublicKey,
+  tokenProgram: PublicKey,
+  metadataProgram: PublicKey,  
 ): TransactionInstruction {
   const [stakeAccount] = PublicKey.findProgramAddressSync(
     [nftHolder.toBuffer(), nftTokenAccount.toBuffer()],
     programId
   )
+
+  const [delegateAuthority] = PublicKey.findProgramAddressSync(
+    [Buffer.from("authority")],
+    programId
+  )
+
+  const [mintAuth] = PublicKey.findProgramAddressSync(
+    [Buffer.from("mint")],
+    programId
+  )  
 
   return new TransactionInstruction({
     programId: programId,
@@ -173,6 +217,46 @@ export function createUnstakeInstruction(
         isWritable: true,
         isSigner: false,
       },
+      {
+        pubkey: nftMint,
+        isWritable: false,
+        isSigner: false,
+      },
+      {
+        pubkey: nftEdition,
+        isWritable: false,
+        isSigner: false,
+      },
+      {
+        pubkey: delegateAuthority,
+        isWritable: true,
+        isSigner: false,
+      },
+      {
+        pubkey: stakeMint,
+        isWritable: true,
+        isSigner: false,
+      },
+      {
+        pubkey: mintAuth,
+        isWritable: false,
+        isSigner: false,
+      },
+      {
+        pubkey: userStakeATA,
+        isWritable: true,
+        isSigner: false,
+      },
+      {
+        pubkey: tokenProgram,
+        isWritable: false,
+        isSigner: false,
+      },
+      {
+        pubkey: metadataProgram,
+        isWritable: false,
+        isSigner: false,
+      }         
     ],
     data: Buffer.from([3]),
   })
